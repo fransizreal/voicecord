@@ -84,7 +84,7 @@ class openWebsocket(WebSocketApp):
     def handleClose(self, ws, status: int, message: str) -> None:
         if status == 4004:
             log("Token invalid").error()
-            os._exit()
+            os._exit(1)
         else:
             os.system("cls")
             self.close()
@@ -100,9 +100,13 @@ class openWebsocket(WebSocketApp):
             sleep(self.heartbeatInterval)
 
 if __name__ == "__main__":
-    token = input(log("Enter your token").input())
-    guild = input(log("Enter guild ID").input())
-    channel = input(log("Enter channel ID").input())
-    websocket = openWebsocket(token, guild, channel)
-    keyboard.add_hotkey("ctrl+q", websocket.handleQuit)
-    websocket.run_forever()
+    try:
+        token = str(input(log("Enter your token").input()))
+        guild = int(input(log("Enter guild ID").input()))
+        channel = int(input(log("Enter channel ID").input()))
+        websocket = openWebsocket(token, guild, channel)
+        keyboard.add_hotkey("ctrl+q", websocket.handleQuit)
+        websocket.run_forever()
+    except ValueError:
+        log('Invalid input').error()
+        os._exit(1)
